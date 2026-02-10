@@ -1,8 +1,19 @@
 // Progress checkpoint: edited 2026-02-10 — incremental work
-import { Transaction, BankName } from '../types';
+import { Transaction, BankName, Geolocation } from '../types';
 import { generateTransactionFingerprint } from './jlynCipher';
 
 const BANKS: BankName[] = ['HDFC', 'ICICI', 'SBI'];
+
+const LOCATIONS: Geolocation[] = [
+  { city: 'Mumbai', latitude: 19.0760, longitude: 72.8777, country: 'India' },
+  { city: 'Delhi', latitude: 28.7041, longitude: 77.1025, country: 'India' },
+  { city: 'Bangalore', latitude: 12.9716, longitude: 77.5946, country: 'India' },
+  { city: 'Hyderabad', latitude: 17.3850, longitude: 78.4867, country: 'India' },
+  { city: 'Chennai', latitude: 13.0827, longitude: 80.2707, country: 'India' },
+  { city: 'Kolkata', latitude: 22.5726, longitude: 88.3639, country: 'India' },
+  { city: 'Pune', latitude: 18.5204, longitude: 73.8567, country: 'India' },
+  { city: 'Ahmedabad', latitude: 23.0225, longitude: 72.5714, country: 'India' }
+];
 
 const MERCHANTS = [
   'Amazon India',
@@ -88,7 +99,7 @@ function calculateRiskScore(
 
 export function generateTransaction(
   isFraudScenario: boolean = false,
-  fraudPattern?: { merchant: string; card: string; device: string; amount: number; fraudRingId?: string }
+  fraudPattern?: { merchant: string; card: string; device: string; amount: number; fraudRingId?: string; location?: Geolocation }
 ): Transaction {
   const bank = BANKS[Math.floor(Math.random() * BANKS.length)];
   const timestamp = Date.now();
@@ -97,17 +108,20 @@ export function generateTransaction(
   let card: string;
   let device: string;
   let amount: number;
+  let location: Geolocation;
 
   if (isFraudScenario && fraudPattern) {
     merchant = fraudPattern.merchant;
     card = fraudPattern.card;
     device = fraudPattern.device;
     amount = fraudPattern.amount + (Math.random() * 1000 - 500);
+    location = fraudPattern.location || LOCATIONS[Math.floor(Math.random() * LOCATIONS.length)];
   } else {
     merchant = MERCHANTS[Math.floor(Math.random() * MERCHANTS.length)];
     card = generateCardNumber();
     device = generateDeviceId();
     amount = Math.floor(Math.random() * 100000) + 100;
+    location = LOCATIONS[Math.floor(Math.random() * LOCATIONS.length)];
   }
 
   // For fraud rings, use the fraud ring ID to ensure matching fingerprints
@@ -138,7 +152,8 @@ export function generateTransaction(
     riskScore: score,
     jlynFingerprint: fingerprint,
     aiReasoning: reasoning,
-    isFraud: isFraudScenario
+    isFraud: isFraudScenario,
+    location
   };
 }
 
@@ -148,6 +163,13 @@ export function generateFraudRing(): Transaction[] {
   const device = generateDeviceId();
   const baseAmount = 25000 + Math.floor(Math.random() * 50000);
   const fraudRingId = Math.random().toString(36).substring(2, 8).toUpperCase();
+  
+  // Select locations for the fraud ring (different cities for cross-location fraud)
+  const selectedLocations = new Set<Geolocation>();
+  while (selectedLocations.size < 2 + Math.floor(Math.random() * 2)) {
+    selectedLocations.add(LOCATIONS[Math.floor(Math.random() * LOCATIONS.length)]);
+  }
+  const locations = Array.from(selectedLocations);
 
   const fraudPattern = { merchant, card, device, amount: baseAmount, fraudRingId };
 
@@ -161,11 +183,14 @@ export function generateFraudRing(): Transaction[] {
     selectedBanks.add(BANKS[Math.floor(Math.random() * BANKS.length)]);
   }
 
+  let locationIdx = 0;
   for (const bank of selectedBanks) {
-    const tx = generateTransaction(true, fraudPattern);
+    const location = locations[locationIdx % locations.length];
+    const tx = generateTransaction(true, { ...fraudPattern, location });
     // Override the bank to ensure cross-bank fraud
     (tx as any).bank = bank;
     transactions.push(tx);
+    locationIdx++;
   }
 
   return transactions;

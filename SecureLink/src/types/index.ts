@@ -1,6 +1,13 @@
 // Progress checkpoint: edited 2026-02-10 — incremental work
 export type BankName = 'HDFC' | 'ICICI' | 'SBI';
 
+export interface Geolocation {
+  city: string;
+  latitude: number;
+  longitude: number;
+  country: string;
+}
+
 export interface Transaction {
   id: string;
   bank: BankName;
@@ -13,6 +20,7 @@ export interface Transaction {
   jlynFingerprint: string;
   aiReasoning: string[];
   isFraud: boolean;
+  location: Geolocation;
 }
 
 export interface FraudRing {
@@ -21,6 +29,25 @@ export interface FraudRing {
   transactions: Transaction[];
   timestamp: number;
   banksInvolved: BankName[];
+}
+
+export interface MerchantProfile {
+  name: string;
+  category: string;
+  trustScore: number; // 0-100
+  incidentCount: number;
+  totalTransactionVolume: number;
+  averageTransactionAmount: number;
+  lastIncidentTime: number | null;
+}
+
+export interface AnalyticsData {
+  totalTransactions: number;
+  fraudDetectionRate: number; // percentage
+  fraudByBank: Record<BankName, number>;
+  fraudByMerchantCategory: Record<string, number>;
+  fraudByTimeOfDay: Record<number, number>;
+  averageRiskScore: number;
 }
 
 export interface GraphNode {

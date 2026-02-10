@@ -1,4 +1,4 @@
-// Progress checkpoint: edited 2026-02-10 — incremental work
+// Progress checkpoint: edited 2026-02-10 — integrated geolocation, merchant risk, timeline, analytics, search (5 new features)
 import { useState, useEffect, useRef } from 'react';
 import { Zap, Eye } from 'lucide-react';
 import { ParticleBackground } from './components/ParticleBackground';
@@ -10,9 +10,14 @@ import { JlynDemo } from './components/JlynDemo';
 import { FraudAlert } from './components/FraudAlert';
 import { TransactionDetail } from './components/TransactionDetail';
 import { SettingsPanel } from './components/SettingsPanel';
+import { GeolocationMap } from './components/GeolocationMap';
+import { FraudRingTimeline } from './components/FraudRingTimeline';
+import { AnalyticsDashboard } from './components/AnalyticsDashboard';
+import { TransactionSearch } from './components/TransactionSearch';
 import { Transaction, Metrics, FraudRing } from './types';
 import { generateTransaction, generateFraudRing } from './utils/transactionSimulator';
 import { FraudDetectionEngine } from './utils/fraudDetection';
+import { merchantDatabase } from './utils/merchantDatabase';
 import { SIMULATION_CONFIG } from './config/constants';
 
 function App() {
@@ -30,6 +35,7 @@ function App() {
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [simulationSpeed, setSimulationSpeed] = useState(SIMULATION_CONFIG.DEFAULT_TRANSACTION_SPEED);
   const [isSimulationRunning, setIsSimulationRunning] = useState(true);
+  const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'geolocation' | 'timeline' | 'search'>('overview');
 
   const detectionEngineRef = useRef(new FraudDetectionEngine());
   const fraudRingTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -52,6 +58,11 @@ function App() {
           if (ring && index === fraudTransactions.length - 1) {
             setFraudRings(prev => [...prev, ring]);
             setCurrentAlert(ring);
+
+            // Record fraud incidents in merchant database
+            fraudTransactions.forEach(fraudTx => {
+              merchantDatabase.recordFraudIncident(fraudTx.merchant, Date.now());
+            });
 
             setMetrics(prev => ({
               ...prev,
@@ -86,6 +97,9 @@ function App() {
       setTransactions(prev => [...prev.slice(-99), tx]); // Keep only last 100 transactions
 
       detectionEngineRef.current.addTransaction(tx);
+
+      // Record legitimate transaction in merchant database
+      merchantDatabase.recordTransaction(tx.merchant, tx.amount);
 
       setMetrics(prev => ({
         ...prev,
@@ -137,35 +151,88 @@ function App() {
 
         <MetricsBar metrics={metrics} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-          <BankStream
-            bank="HDFC"
-            transactions={transactions}
-            fraudFingerprints={fraudFingerprints}
-            onTransactionClick={setSelectedTransaction}
-          />
-          <BankStream
-            bank="ICICI"
-            transactions={transactions}
-            fraudFingerprints={fraudFingerprints}
-            onTransactionClick={setSelectedTransaction}
-          />
-          <BankStream
-            bank="SBI"
-            transactions={transactions}
-            fraudFingerprints={fraudFingerprints}
-            onTransactionClick={setSelectedTransaction}
-          />
+        {/* Tab Navigation */}
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-2 border-b border-purple-500/20">
+          {['overview', 'analytics', 'geolocation', 'timeline', 'search'].map(tab => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab as any)}
+              className={`px-4 py-2 rounded-lg whitespace-nowrap transition-all ${
+                activeTab === tab
+                  ? 'bg-purple-500 text-white'
+                  : 'bg-slate-900/50 text-gray-400 hover:bg-slate-800'
+              }`}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2 h-[500px]">
-            <FraudGraph transactions={transactions} fraudRings={fraudRings} />
+        {/* Overview Tab */}
+        {activeTab === 'overview' && (
+          <>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+              <BankStream
+                bank="HDFC"
+                transactions={transactions}
+                fraudFingerprints={fraudFingerprints}
+                onTransactionClick={setSelectedTransaction}
+              />
+              <BankStream
+                bank="ICICI"
+                transactions={transactions}
+                fraudFingerprints={fraudFingerprints}
+                onTransactionClick={setSelectedTransaction}
+              />
+              <BankStream
+                bank="SBI"
+                transactions={transactions}
+                fraudFingerprints={fraudFingerprints}
+                onTransactionClick={setSelectedTransaction}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <div className="lg:col-span-2 h-[500px]">
+                <FraudGraph transactions={transactions} fraudRings={fraudRings} />
+              </div>
+              <div className="h-[500px]">
+                <FederatedLearning fingerprintsShared={metrics.jlynFingerprintsGenerated} />
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Analytics Dashboard Tab */}
+        {activeTab === 'analytics' && (
+          <div className="bg-slate-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6">
+            <AnalyticsDashboard transactions={transactions} fraudRings={fraudRings} />
           </div>
-          <div className="h-[500px]">
-            <FederatedLearning fingerprintsShared={metrics.jlynFingerprintsGenerated} />
+        )}
+
+        {/* Geolocation Map Tab */}
+        {activeTab === 'geolocation' && (
+          <div className="bg-slate-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6">
+            <GeolocationMap transactions={transactions} fraudRings={fraudRings} />
           </div>
-        </div>
+        )}
+
+        {/* Fraud Ring Timeline Tab */}
+        {activeTab === 'timeline' && (
+          <div className="bg-slate-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6">
+            <FraudRingTimeline fraudRings={fraudRings} allTransactions={transactions} />
+          </div>
+        )}
+
+        {/* Transaction Search Tab */}
+        {activeTab === 'search' && (
+          <div className="bg-slate-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6">
+            <TransactionSearch 
+              transactions={transactions}
+              onSelect={setSelectedTransaction}
+            />
+          </div>
+        )}
 
         <div className="mt-6 text-center">
           <div className="inline-block bg-slate-900/50 backdrop-blur-xl border border-purple-500/30 rounded-lg px-4 py-2">

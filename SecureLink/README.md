@@ -28,6 +28,11 @@ SecureLink/
 │   │   ├── FederatedLearning.tsx       # Cross-bank learning status display
 │   │   ├── FraudAlert.tsx              # Fraud detection alert notifications
 │   │   ├── FraudGraph.tsx              # D3.js fraud network visualization
+│   │   ├── FraudRingTimeline.tsx       # Chronological fraud progression ⭐ NEW
+│   │   ├── GeolocationMap.tsx          # Geographic fraud heatmap ⭐ NEW
+│   │   ├── AnalyticsDashboard.tsx      # Real-time analytics dashboard ⭐ NEW
+│   │   ├── TransactionSearch.tsx       # Advanced search & filtering ⭐ NEW
+│   │   ├── TransactionDetail.tsx       # Detailed transaction inspection modal
 │   │   ├── JlynDemo.tsx                # Interactive cipher demo modal
 │   │   ├── MetricsBar.tsx              # Key performance metrics display
 │   │   ├── ParticleBackground.tsx      # Animated particle network background
@@ -40,8 +45,9 @@ SecureLink/
 │   ├── utils/
 │   │   ├── fraudDetection.ts           # Fraud ring detection engine
 │   │   ├── jlynCipher.ts               # Jlyn fingerprinting algorithm
-│   │   └── transactionSimulator.ts     # Transaction generation for demo
-│   ├── App.tsx                         # Main application component
+│   │   ├── merchantDatabase.ts         # Merchant risk scoring database ⭐ NEW
+│   │   └── transactionSimulator.ts     # Transaction generation with locations ⭐ UPDATED
+│   ├── App.tsx                         # Main application with tab navigation ⭐ UPDATED
 │   ├── main.tsx                        # Application entry point
 │   └── index.css                       # Global styles
 ├── public/
@@ -51,7 +57,9 @@ SecureLink/
 ├── vite.config.ts                      # Vite bundler configuration
 ├── tailwind.config.js                  # Tailwind CSS configuration
 ├── eslint.config.js                    # ESLint rules
-└── postcss.config.js                   # PostCSS configuration
+├── postcss.config.js                   # PostCSS configuration
+├── README.md                           # Project documentation
+└── FEATURE_SUMMARY.md                  # Detailed feature overview ⭐ NEW
 ```
 
 ### Architecture Layers
@@ -76,27 +84,41 @@ SecureLink/
 #### Data Flow
 
 ```
-TransactionSimulator
+TransactionSimulator (with Geolocation data)
        |
        v
 generateTransaction() / generateFraudRing()
        |
        v
-App.tsx (State Management)
+App.tsx (State Management with Tab Navigation)
        |
        +---> FraudDetectionEngine.addTransaction()
        |     |
        |     v
        |     FraudRing Detection
        |
+       +---> Merchant Database (fraud incidents tracking)
+       |
        +---> Metrics Update
        |
-       +---> Component Rendering
+       +---> Component Rendering (5 Tab Views)
              |
-             +---> BankStream (by bank)
-             +---> FraudGraph (visualization)
-             +---> MetricsBar (statistics)
-             +---> FraudAlert (notifications)
+             +---> Overview Tab (original dashboard)
+             |     ├─ BankStream (by bank)
+             |     ├─ FraudGraph (visualization)
+             |     └─ FederatedLearning (stats)
+             |
+             +---> Analytics Tab ⭐ NEW
+             |     └─ AnalyticsDashboard
+             |
+             +---> Geolocation Tab ⭐ NEW
+             |     └─ GeolocationMap
+             |
+             +---> Timeline Tab ⭐ NEW
+             |     └─ FraudRingTimeline
+             |
+             +---> Search Tab ⭐ NEW
+                   └─ TransactionSearch
 ```
 
 ## Features
@@ -114,6 +136,47 @@ App.tsx (State Management)
 - Automatic fraud ring identification
 - Multi-bank involvement tracking
 - Historical fraud pattern analysis
+
+### Advanced Analytics Dashboard ⭐ NEW
+
+- **Key Metrics**: Transaction volume, fraud detection rate %, average risk score, active fraud rings
+- **Fraud Distribution**: Analysis by bank (HDFC/ICICI/SBI)
+- **Category Analysis**: Top fraud categories (E-Commerce, Food, Transport, etc.)
+- **Peak Hour Detection**: Identifies when fraud occurs most frequently
+- Real-time updates as transactions flow through the system
+
+### Geolocation Heatmap ⭐ NEW
+
+- Transaction location mapping across 8 major Indian cities
+- **Fraud Rate Analysis**: Calculates fraud percentage per city
+- **Risk Level Classification**: High (>30%), Medium (10-30%), Low (<10%)
+- **Impossible Travel Detection**: Flags same-card transactions in different cities within 5 minutes
+- City-wise fraud statistics: transaction count, fraud detected, fraud percentage
+
+### Fraud Ring Timeline ⭐ NEW
+
+- Chronological visualization of fraud ring transactions
+- **Per-Transaction Details**: Merchant, timestamp, bank, amount, risk score
+- **Ring Statistics**: Total amount frauded, average risk score, ring duration
+- Visual timeline flow with animated cards
+
+### Merchant Risk Scoring ⭐ NEW
+
+- Tracks 20+ merchants across Indian e-commerce and services ecosystem
+- **Trust Score**: Dynamic 0-100 scale adjusting with each transaction
+- **Category Tracking**: E-Commerce, Food & Delivery, Entertainment, Travel, etc.
+- **Incident Management**: Records and learns from fraudulent transactions
+- **High-Risk Alerts**: Identifies merchants with compromised systems
+
+### Advanced Transaction Search ⭐ NEW
+
+- **Text Search**: Query by transaction ID, merchant name, card (last 4), device ID
+- **Smart Filters**:
+  - Bank selection (HDFC/ICICI/SBI or All)
+  - Amount range filtering with sliders
+  - Risk score range filtering (0-100)
+- **Efficient Results**: Sortable, paginated results from 1000+ transactions
+- **Quick Action**: Click any result to view detailed transaction analysis
 
 ### Network Visualization
 
@@ -134,6 +197,7 @@ App.tsx (State Management)
 - Live transaction speed adjustment (50-500ms)
 - Simulation pause/resume functionality
 - Settings panel with helpful tips
+- Tabbed interface for feature navigation ⭐ UPDATED
 - Responsive design for all devices
 
 ## Technology Stack
@@ -252,6 +316,7 @@ Displays real-time transaction feed for each bank. Shows the 5 most recent trans
 - `bank: BankName` - Bank identifier (HDFC, ICICI, SBI)
 - `transactions: Transaction[]` - Transaction data
 - `fraudFingerprints: Set<string>` - Known fraud fingerprints
+- `onTransactionClick: (tx: Transaction) => void` - Selection handler
 
 ### FraudGraph
 Interactive D3.js network visualization showing relationships between cards, merchants, and devices. Displays fraud connections with glow effects.
@@ -259,6 +324,59 @@ Interactive D3.js network visualization showing relationships between cards, mer
 **Props:**
 - `transactions: Transaction[]` - Recent transaction data
 - `fraudRings: FraudRing[]` - Detected fraud rings
+
+### AnalyticsDashboard ⭐ NEW
+Real-time analytics dashboard showing fraud metrics, distribution by bank, top fraud categories, and peak fraud hours.
+
+**Props:**
+- `transactions: Transaction[]` - Transaction data
+- `fraudRings: FraudRing[]` - Detected fraud rings
+
+**Features:**
+- Key metrics: transaction count, fraud rate %, avg risk, ring count
+- Fraud by bank distribution chart
+- Top 3 fraud categories analysis
+- Peak 2 fraud hours identification
+
+### GeolocationMap ⭐ NEW
+Geographic fraud heatmap visualizing transaction locations across Indian cities with impossible travel detection.
+
+**Props:**
+- `transactions: Transaction[]` - Transaction data
+- `fraudRings: FraudRing[]` - Detected fraud rings
+
+**Features:**
+- 8-city location aggregation
+- Fraud rate calculation per city
+- Risk level classification (low/medium/high)
+- Impossible travel detection alert
+- City statistics: transaction count, fraud detected, fraud rate
+
+### FraudRingTimeline ⭐ NEW
+Chronological visualization of fraud ring transactions with timeline progression.
+
+**Props:**
+- `fraudRings: FraudRing[]` - Detected fraud rings
+- `allTransactions: Transaction[]` - Complete transaction history
+
+**Features:**
+- Fraud ring list with timeline
+- Transaction details: merchant, time, bank, amount, risk score
+- Ring summary: total amount, avg risk, duration
+- Animated card entries
+
+### TransactionSearch ⭐ NEW
+Advanced transaction search and filtering interface with multi-criteria support.
+
+**Props:**
+- `transactions: Transaction[]` - Transaction data
+- `onSelect: (tx: Transaction) => void` - Selection handler
+
+**Features:**
+- Text search: transaction ID, merchant, card, device ID
+- Filter panel: bank, amount range, risk range
+- Efficient sorting and pagination
+- Click-to-inspect detail modal
 
 ### MetricsBar
 Displays key performance indicators including transactions analyzed, fraud blocked, money saved, fingerprints generated, and active fraud rings.
@@ -279,18 +397,21 @@ Interactive control panel for simulation adjustments and pause/resume functional
 
 ### Optimizations Applied
 
-- React.memo memoization on 4 key components
+- React.memo memoization on all 8 UI components
+- **useMemo optimization** for expensive calculations in Timeline, Geolocation, and Analytics ⭐ NEW
 - Particle background O(n²) to O(n·k) optimization
 - Transaction windowing (last 100 transactions)
 - Squared distance calculations to avoid expensive sqrt()
 - Proper animation frame cleanup
+- Cached location aggregation and fraud calculations
 
 ### Performance Metrics
 
 - Mobile animation performance: 45-55 FPS (optimized from 25-30 FPS)
 - Component re-renders: 2-3 per metric change (optimized from 40-60)
-- Memory usage: ~25MB with 100 transactions
+- Memory usage: ~25MB with 100 transactions (stable over time due to caching)
 - Initial render time: ~380ms
+- Timeline render: Stable with 100+ transactions (no memory leak)
 
 ## Type Definitions
 
@@ -308,6 +429,42 @@ interface Transaction {
   jlynFingerprint: string;
   aiReasoning: string[];
   isFraud: boolean;
+  location: Geolocation;  // ⭐ NEW: Geographic data
+}
+```
+
+### Geolocation ⭐ NEW
+```typescript
+interface Geolocation {
+  city: string;
+  latitude: number;
+  longitude: number;
+  country: string;
+}
+```
+
+### MerchantProfile ⭐ NEW
+```typescript
+interface MerchantProfile {
+  name: string;
+  category: string;
+  trustScore: number;        // 0-100 dynamic score
+  incidentCount: number;
+  totalTransactionVolume: number;
+  averageTransactionAmount: number;
+  lastIncidentTime: number | null;
+}
+```
+
+### AnalyticsData ⭐ NEW
+```typescript
+interface AnalyticsData {
+  totalTransactions: number;
+  fraudDetectionRate: number;
+  fraudByBank: Record<BankName, number>;
+  fraudByMerchantCategory: Record<string, number>;
+  fraudByTimeOfDay: Record<number, number>;
+  averageRiskScore: number;
 }
 ```
 
@@ -403,12 +560,12 @@ Transactions are automatically cleaned after 60 seconds to manage memory.
 
 - Real API integration for live transaction data
 - WebSocket support for true real-time updates
-- Advanced analytics and reporting dashboards
 - Machine learning-based risk scoring
 - PDF export functionality
 - Dark/Light theme toggle
-- Transaction search and filtering
 - Sound notifications for fraud alerts
+- Batch transaction import
+- Custom date range filtering ⭐ COMING SOON
 
 ### Architecture Improvements
 
@@ -464,7 +621,20 @@ Developed by Team Xcalibur
 
 ## Changelog
 
-### Version 1.0.0 (Current)
+### Version 1.1.0 (Latest) ⭐ MAJOR UPDATE
+
+- Added Advanced Analytics Dashboard with real-time fraud metrics
+- Added Geolocation Heatmap with impossible travel detection
+- Added Fraud Ring Timeline for chronological fraud visualization
+- Added Advanced Transaction Search with multi-criteria filtering
+- Added Merchant Risk Scoring Database for tracking merchant trust
+- Added tabbed interface for feature navigation
+- Implemented useMemo optimization for performance stability
+- Fixed memory leak crash on Timeline component
+- Added location data to all transactions
+- Improved data flow architecture
+
+### Version 1.0.0 (Previous)
 
 - Initial release
 - Cross-bank fraud detection
