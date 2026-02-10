@@ -12,6 +12,17 @@ export class FraudDetectionEngine {
 
     this.cleanupOldTransactions();
 
+    // Check if this transaction matches an existing ring
+    const existingRing = this.findMatchingRing(transaction);
+    if (existingRing) {
+      // Update existing ring with new transaction
+      if (!existingRing.transactions.find(tx => tx.id === transaction.id)) {
+        existingRing.transactions.push(transaction);
+      }
+      return existingRing;
+    }
+
+    // Otherwise, find all matching transactions to create a new ring
     const matchingTransactions = this.findMatchingFingerprints(transaction);
 
     if (matchingTransactions.length >= 2) {
@@ -20,6 +31,16 @@ export class FraudDetectionEngine {
       return ring;
     }
 
+    return null;
+  }
+
+  private findMatchingRing(transaction: Transaction): FraudRing | null {
+    // Check if this transaction matches any existing ring's fingerprint
+    for (const ring of this.detectedRings) {
+      if (fingerprintsMatch(transaction.jlynFingerprint, ring.fingerprint)) {
+        return ring;
+      }
+    }
     return null;
   }
 
@@ -45,7 +66,7 @@ export class FraudDetectionEngine {
     return {
       id: `RING${Date.now()}${Math.random().toString(36).substring(2, 6)}`.toUpperCase(),
       fingerprint: transactions[0].jlynFingerprint,
-      transactions,
+      transactions: [...transactions],
       timestamp: Date.now(),
       banksInvolved: uniqueBanks
     };
