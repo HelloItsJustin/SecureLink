@@ -1,3 +1,4 @@
+// Progress checkpoint: edited 2026-02-10 — incremental work
 import { memo } from 'react';
 import { motion } from 'framer-motion';
 import { Transaction, BankName } from '../types';

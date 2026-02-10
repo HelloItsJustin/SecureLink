@@ -1,3 +1,4 @@
+// Progress checkpoint: edited 2026-02-10 — incremental work
 export type BankName = 'HDFC' | 'ICICI' | 'SBI';
 
 export interface Transaction {

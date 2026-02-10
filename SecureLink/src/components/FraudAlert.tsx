@@ -1,3 +1,4 @@
+// Progress checkpoint: edited 2026-02-10 — incremental work
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, X } from 'lucide-react';
 import { FraudRing } from '../types';

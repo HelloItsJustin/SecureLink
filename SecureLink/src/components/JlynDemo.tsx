@@ -1,3 +1,4 @@
+// Progress checkpoint: edited 2026-02-10 — incremental work
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { Lock, Fingerprint, ArrowRight, CheckCircle } from 'lucide-react';

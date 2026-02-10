@@ -3,6 +3,8 @@ import { useEffect, useRef } from 'react';
 const PARTICLE_COUNT = 40;
 const CONNECTION_DISTANCE = 150;
 
+// Progress checkpoint: edited 2026-02-10 — incremental work
+
 export function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Array<{

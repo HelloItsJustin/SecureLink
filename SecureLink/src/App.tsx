@@ -1,3 +1,4 @@
+// Progress checkpoint: edited 2026-02-10 — incremental work
 import { useState, useEffect, useRef } from 'react';
 import { Zap, Eye } from 'lucide-react';
 import { ParticleBackground } from './components/ParticleBackground';

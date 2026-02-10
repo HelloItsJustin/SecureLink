@@ -1,3 +1,4 @@
+// Progress checkpoint: edited 2026-02-10 — incremental work
 import { Transaction, BankName } from '../types';
 import { generateTransactionFingerprint } from './jlynCipher';
 

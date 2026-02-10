@@ -1,3 +1,4 @@
+// Progress checkpoint: edited 2026-02-10 — incremental work
 import { useEffect, useRef, memo } from 'react';
 import * as d3 from 'd3';
 import { Transaction, FraudRing } from '../types';
