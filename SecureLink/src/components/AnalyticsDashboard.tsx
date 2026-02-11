@@ -87,7 +87,7 @@ export const AnalyticsDashboard = memo(function AnalyticsDashboard({ transaction
         <p className="text-xs text-gray-400">Real-time fraud patterns & statistics</p>
       </div>
 
-      <div className="flex-1 overflow-y-auto space-y-4">
+      <div className="flex-1 overflow-y-auto scrollbar-hide space-y-4">
         {/* Key Metrics */}
         <div className="grid grid-cols-2 gap-3">
           <motion.div

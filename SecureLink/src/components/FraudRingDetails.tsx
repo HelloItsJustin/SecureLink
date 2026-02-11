@@ -48,7 +48,7 @@ export const FraudRingDetails = memo(function FraudRingDetails({ fraudRings, all
         <p className="text-xs text-gray-400">{fraudRings?.length || 0} detected rings</p>
       </div>
 
-      <div className="flex-1 overflow-y-auto space-y-4">
+      <div className="flex-1 overflow-y-auto scrollbar-hide space-y-4">
         {fraudRings.length === 0 ? (
           <div className="flex items-center justify-center h-full text-gray-500 text-sm">
             No fraud rings detected yet

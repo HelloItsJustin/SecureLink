@@ -179,7 +179,7 @@ export const TransactionSearch = memo(function TransactionSearch({ transactions,
       </AnimatePresence>
 
       {/* Results */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto scrollbar-hide">
         <p className="text-xs text-gray-400 mb-3">
           Showing <span className="font-bold text-white">{filteredTransactions.length}</span> results
         </p>

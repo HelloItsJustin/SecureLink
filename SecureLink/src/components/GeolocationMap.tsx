@@ -253,7 +253,7 @@ export const GeolocationMap = memo(function GeolocationMap({ transactions, fraud
         <div ref={mapRef} className="flex-1 rounded-lg overflow-hidden border border-indigo-500/20 bg-slate-800/30 min-h-0" style={{ minHeight: '600px' }} />
 
         {/* Stats Sidebar */}
-        <div className="w-80 flex flex-col gap-3 overflow-y-auto">
+        <div className="w-80 flex flex-col gap-3 overflow-y-auto scrollbar-hide">
           <div className="bg-slate-800/50 rounded-lg p-3 border border-indigo-500/20">
             <h4 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-blue-400" />
@@ -334,7 +334,7 @@ export const GeolocationMap = memo(function GeolocationMap({ transactions, fraud
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-slate-900 border border-indigo-500/30 rounded-xl max-w-2xl w-full max-h-96 overflow-y-auto"
+              className="bg-slate-900 border border-indigo-500/30 rounded-xl max-w-2xl w-full max-h-96 overflow-y-auto scrollbar-hide"
               onClick={e => e.stopPropagation()}
               onKeyDown={e => {
                 if (e.key === 'Escape') setSelectedLocation(null);
@@ -381,7 +381,7 @@ export const GeolocationMap = memo(function GeolocationMap({ transactions, fraud
                     <MapPin className="w-4 h-4 text-blue-400" />
                     Recent Transactions
                   </h3>
-                  <div className="space-y-2 max-h-48 overflow-y-auto">
+                  <div className="space-y-2 max-h-48 overflow-y-auto scrollbar-hide">
                     {selectedLocation.data.transactionDetails.slice(0, 10).map((tx, idx) => {
                       return (
                         <div key={idx} className="bg-slate-800/30 border border-indigo-500/20 rounded-lg p-2.5 text-xs">

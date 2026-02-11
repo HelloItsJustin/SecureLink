@@ -75,7 +75,7 @@ export const TransactionDetail = memo(function TransactionDetail({
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.9, opacity: 0, y: 20 }}
           onClick={(e) => e.stopPropagation()}
-          className={`bg-gradient-to-br ${getRiskColor()} border backdrop-blur-xl rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto`}
+          className={`bg-gradient-to-br ${getRiskColor()} border backdrop-blur-xl rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto scrollbar-hide`}
         >
           {/* Header */}
           <div className="flex items-start justify-between mb-6">
