@@ -14,61 +14,84 @@ export function FraudAlert({ ring, onClose }: FraudAlertProps) {
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -50 }}
+        initial={{ opacity: 0, y: -50, scale: 0.9 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: -50, scale: 0.9 }}
+        transition={{ type: 'spring', damping: 20, stiffness: 300 }}
         className="fixed top-4 right-4 z-50 max-w-md"
       >
-        <div className="bg-gradient-to-br from-pink-500/20 to-red-500/20 backdrop-blur-xl border-2 border-pink-500 rounded-xl p-4 shadow-2xl">
-          <div className="flex items-start justify-between mb-3">
+        <div className="bg-gradient-to-br from-pink-500/20 via-red-500/15 to-pink-600/20 backdrop-blur-xl border-2 border-pink-500/70 rounded-xl p-5 shadow-2xl hover:shadow-pink-500/30 transition-shadow duration-300">
+          <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
               <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 0.5, repeat: Infinity }}
+                animate={{ scale: [1, 1.3, 1], rotate: [0, 5, -5, 0] }}
+                transition={{ duration: 0.8, repeat: Infinity }}
+                className="flex-shrink-0"
               >
-                <AlertCircle className="w-6 h-6 text-pink-500" />
+                <AlertCircle className="w-6 h-6 text-pink-500 drop-shadow-lg" />
               </motion.div>
               <div>
-                <h3 className="text-lg font-bold text-white">Fraud Ring Detected!</h3>
-                <p className="text-xs text-pink-300">Cross-bank pattern match</p>
+                <h3 className="text-lg font-bold text-white">🚨 Fraud Ring Detected!</h3>
+                <p className="text-xs text-pink-300 font-medium">Cross-bank pattern match</p>
               </div>
             </div>
-            <button
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
               onClick={onClose}
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-gray-400 hover:text-white hover:bg-white/10 rounded-lg p-1 transition-colors"
             >
               <X className="w-4 h-4" />
-            </button>
+            </motion.button>
           </div>
 
-          <div className="bg-slate-900/50 rounded-lg p-3 mb-3">
-            <div className="text-xs text-gray-400 mb-1">Matched Jlyn Fingerprint</div>
-            <div className="font-mono text-sm text-pink-400 break-all">
-              {ring.fingerprint}
+          <div className="bg-gradient-to-r from-slate-900/70 to-slate-800/50 border border-pink-500/20 rounded-lg p-3 mb-4">
+            <div className="text-xs text-gray-400 mb-2 font-semibold">Matched Jlyn Fingerprint</div>
+            <div className="font-mono text-xs text-pink-300/80 break-all bg-slate-900/50 p-2 rounded border border-slate-700/50">
+              {ring.fingerprint.slice(0, 32)}...
             </div>
           </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-400">Banks Involved:</span>
+          <div className="space-y-2 mb-4">
+            <motion.div 
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 }}
+              className="flex items-center justify-between text-sm bg-slate-900/30 p-2 rounded border border-slate-700/50"
+            >
+              <span className="text-gray-400 font-medium">Banks Involved:</span>
               <span className="text-white font-semibold">{ring.banksInvolved.join(', ')}</span>
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-400">Transactions:</span>
-              <span className="text-white font-semibold">{ring.transactions.length}</span>
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-400">Total Amount:</span>
-              <span className="text-white font-semibold">
+            </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.15 }}
+              className="flex items-center justify-between text-sm bg-slate-900/30 p-2 rounded border border-slate-700/50"
+            >
+              <span className="text-gray-400 font-medium">Transactions:</span>
+              <span className="text-red-300 font-bold">{ring.transactions.length}</span>
+            </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex items-center justify-between text-sm bg-slate-900/30 p-2 rounded border border-slate-700/50"
+            >
+              <span className="text-gray-400 font-medium">Total Amount:</span>
+              <span className="text-red-300 font-bold">
                 ₹{ring.transactions.reduce((sum, tx) => sum + tx.amount, 0).toLocaleString()}
               </span>
-            </div>
+            </motion.div>
           </div>
 
-          <div className="mt-3 pt-3 border-t border-pink-500/30">
-            <div className="text-xs text-pink-300 text-center">
-              All transactions blocked automatically
-            </div>
+          <div className="pt-3 border-t border-pink-500/20 text-center">
+            <motion.div 
+              animate={{ opacity: [0.7, 1, 0.7] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="text-xs text-pink-300/90 font-semibold"
+            >
+              ✓ All transactions blocked automatically
+            </motion.div>
           </div>
         </div>
       </motion.div>

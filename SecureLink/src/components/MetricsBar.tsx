@@ -10,14 +10,15 @@ interface MetricsBarProps {
 
 export const MetricsBar = memo(function MetricsBar({ metrics }: MetricsBarProps) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 lg:gap-4 mb-6">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 lg:gap-4 mb-8">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-xl border border-blue-500/30 rounded-xl p-3 sm:p-4"
+        whileHover={{ scale: 1.02, translateY: -4 }}
+        className="group bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-xl border border-blue-500/30 hover:border-blue-500/50 rounded-xl p-3 sm:p-4 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-blue-500/20"
       >
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-          <div className="p-2 bg-blue-500/20 rounded-lg flex-shrink-0">
+          <div className="p-2 bg-blue-500/30 group-hover:bg-blue-500/40 rounded-lg flex-shrink-0 transition-colors">
             <Activity className="w-4 sm:w-5 h-4 sm:h-5 text-blue-400" />
           </div>
           <div className="min-w-0">
@@ -33,10 +34,11 @@ export const MetricsBar = memo(function MetricsBar({ metrics }: MetricsBarProps)
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-gradient-to-br from-pink-500/20 to-red-500/20 backdrop-blur-xl border border-pink-500/30 rounded-xl p-3 sm:p-4"
+        whileHover={{ scale: 1.02, translateY: -4 }}
+        className="group bg-gradient-to-br from-pink-500/20 to-red-500/20 backdrop-blur-xl border border-pink-500/30 hover:border-pink-500/50 rounded-xl p-3 sm:p-4 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-pink-500/20"
       >
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-          <div className="p-2 bg-pink-500/20 rounded-lg flex-shrink-0">
+          <div className="p-2 bg-pink-500/30 group-hover:bg-pink-500/40 rounded-lg flex-shrink-0 transition-colors">
             <Shield className="w-4 sm:w-5 h-4 sm:h-5 text-pink-400" />
           </div>
           <div className="min-w-0">
@@ -52,10 +54,11 @@ export const MetricsBar = memo(function MetricsBar({ metrics }: MetricsBarProps)
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 backdrop-blur-xl border border-green-500/30 rounded-xl p-3 sm:p-4"
+        whileHover={{ scale: 1.02, translateY: -4 }}
+        className="group bg-gradient-to-br from-green-500/20 to-emerald-500/20 backdrop-blur-xl border border-green-500/30 hover:border-green-500/50 rounded-xl p-3 sm:p-4 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-green-500/20"
       >
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-          <div className="p-2 bg-green-500/20 rounded-lg flex-shrink-0">
+          <div className="p-2 bg-green-500/30 group-hover:bg-green-500/40 rounded-lg flex-shrink-0 transition-colors">
             <TrendingUp className="w-4 sm:w-5 h-4 sm:h-5 text-green-400" />
           </div>
           <div className="min-w-0">
@@ -71,10 +74,11 @@ export const MetricsBar = memo(function MetricsBar({ metrics }: MetricsBarProps)
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="bg-gradient-to-br from-purple-500/20 to-violet-500/20 backdrop-blur-xl border border-purple-500/30 rounded-xl p-3 sm:p-4"
+        whileHover={{ scale: 1.02, translateY: -4 }}
+        className="group bg-gradient-to-br from-purple-500/20 to-violet-500/20 backdrop-blur-xl border border-purple-500/30 hover:border-purple-500/50 rounded-xl p-3 sm:p-4 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-purple-500/20"
       >
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-          <div className="p-2 bg-purple-500/20 rounded-lg flex-shrink-0">
+          <div className="p-2 bg-purple-500/30 group-hover:bg-purple-500/40 rounded-lg flex-shrink-0 transition-colors">
             <Fingerprint className="w-4 sm:w-5 h-4 sm:h-5 text-purple-400" />
           </div>
           <div className="min-w-0">
@@ -90,10 +94,11 @@ export const MetricsBar = memo(function MetricsBar({ metrics }: MetricsBarProps)
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="bg-gradient-to-br from-orange-500/20 to-yellow-500/20 backdrop-blur-xl border border-orange-500/30 rounded-xl p-3 sm:p-4"
+        whileHover={{ scale: 1.02, translateY: -4 }}
+        className="group bg-gradient-to-br from-orange-500/20 to-yellow-500/20 backdrop-blur-xl border border-orange-500/30 hover:border-orange-500/50 rounded-xl p-3 sm:p-4 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-orange-500/20"
       >
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-          <div className="p-2 bg-orange-500/20 rounded-lg flex-shrink-0">
+          <div className="p-2 bg-orange-500/30 group-hover:bg-orange-500/40 rounded-lg flex-shrink-0 transition-colors">
             <AlertTriangle className="w-4 sm:w-5 h-4 sm:h-5 text-orange-400" />
           </div>
           <div className="min-w-0">

@@ -11,7 +11,7 @@ import { FraudAlert } from './components/FraudAlert';
 import { TransactionDetail } from './components/TransactionDetail';
 import { SettingsPanel } from './components/SettingsPanel';
 import { GeolocationMap } from './components/GeolocationMap';
-import { FraudRingTimeline } from './components/FraudRingTimeline';
+import { FraudRingDetails } from './components/FraudRingDetails';
 import { AnalyticsDashboard } from './components/AnalyticsDashboard';
 import { TransactionSearch } from './components/TransactionSearch';
 import { Transaction, Metrics, FraudRing } from './types';
@@ -119,59 +119,88 @@ function App() {
       <ParticleBackground />
 
       <div className="relative z-10 p-4 md:p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl">
-              <Zap className="w-8 h-8 text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                SecureLink
-              </h1>
-              <p className="text-sm text-gray-400">Cross-Bank Fraud Detection System</p>
-            </div>
-          </div>
+        {/* Fancy SecureDoc Header */}
+        <div className="mb-8 float-animation">
+          <div className="relative">
+            {/* Glowing background effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/10 to-purple-500/0 rounded-2xl blur-2xl" />
+            <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent rounded-2xl" />
+            
+            {/* Main content */}
+            <div className="relative px-8 py-8 border border-purple-500/30 rounded-2xl bg-gradient-to-br from-slate-900/50 via-slate-800/30 to-slate-900/50 backdrop-blur-lg header-glow">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                {/* Left side - Logo and Text */}
+                <div className="flex items-center gap-5 flex-1">
+                  <div className="relative logo-glow">
+                    {/* Logo glow */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl blur-lg opacity-75" />
+                    <div className="relative p-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl shadow-lg">
+                      <Zap className="w-8 h-8 text-white" />
+                    </div>
+                  </div>
+                  
+                  <div className="flex-1">
+                    <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-blue-300 via-blue-400 to-purple-400 bg-clip-text text-transparent leading-tight">
+                      SecureLink
+                    </h1>
+                    <div className="flex items-center gap-2 mt-2">
+                      <div className="h-1 w-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full" />
+                      <p className="text-sm md:text-base text-gray-300 font-medium">Advanced Cross-Bank Fraud Detection</p>
+                    </div>
+                    <p className="text-xs md:text-sm text-gray-400 mt-1">Powered by Jlyn Cipher • Real-time Protection</p>
+                  </div>
+                </div>
 
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setShowJlynDemo(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/50 rounded-lg transition-colors"
-            >
-              <Eye className="w-4 h-4" />
-              <span className="text-sm font-semibold">Jlyn Demo</span>
-            </button>
-            <SettingsPanel 
-              simulationSpeed={simulationSpeed}
-              onSpeedChange={setSimulationSpeed}
-              isRunning={isSimulationRunning}
-              onToggleRun={() => setIsSimulationRunning(!isSimulationRunning)}
-            />
+                {/* Right side - Buttons */}
+                <div className="flex items-center gap-3 w-full md:w-auto">
+                  <button
+                    onClick={() => setShowJlynDemo(true)}
+                    className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-purple-500/30 to-blue-500/30 hover:from-purple-500/50 hover:to-blue-500/50 border border-purple-500/50 hover:border-purple-500/80 rounded-lg transition-all duration-300 group shadow-lg hover:shadow-purple-500/20"
+                  >
+                    <Eye className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                    <span className="text-sm font-semibold whitespace-nowrap">Jlyn Demo</span>
+                  </button>
+                  <SettingsPanel 
+                    simulationSpeed={simulationSpeed}
+                    onSpeedChange={setSimulationSpeed}
+                    isRunning={isSimulationRunning}
+                    onToggleRun={() => setIsSimulationRunning(!isSimulationRunning)}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
         <MetricsBar metrics={metrics} />
 
         {/* Tab Navigation */}
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-2 border-b border-purple-500/20">
-          {['overview', 'analytics', 'geolocation', 'timeline', 'search'].map(tab => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab as any)}
-              className={`px-4 py-2 rounded-lg whitespace-nowrap transition-all ${
-                activeTab === tab
-                  ? 'bg-purple-500 text-white'
-                  : 'bg-slate-900/50 text-gray-400 hover:bg-slate-800'
-              }`}
-            >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </button>
-          ))}
+        <div className="relative mb-8">
+          <div className="flex gap-1 overflow-x-auto pb-0 scrollbar-hide">
+            {['overview', 'analytics', 'geolocation', 'timeline', 'search'].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab as any)}
+                className={`relative px-4 py-3 font-semibold whitespace-nowrap transition-all duration-300 text-sm md:text-base ${
+                  activeTab === tab
+                    ? 'text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400'
+                    : 'text-gray-400 hover:text-gray-300'
+                }`}
+              >
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                {activeTab === tab && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full" />
+                )}
+              </button>
+            ))}
+          </div>
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-purple-500/20 via-purple-500/0 to-purple-500/20" />
         </div>
 
         {/* Overview Tab */}
         {activeTab === 'overview' && (
           <>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
               <BankStream
                 bank="HDFC"
                 transactions={transactions}
@@ -192,11 +221,11 @@ function App() {
               />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              <div className="lg:col-span-2 h-[500px]">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 h-[500px] rounded-xl overflow-hidden border border-purple-500/20">
                 <FraudGraph transactions={transactions} fraudRings={fraudRings} />
               </div>
-              <div className="h-[500px]">
+              <div className="h-[500px] rounded-xl overflow-hidden border border-purple-500/20">
                 <FederatedLearning fingerprintsShared={metrics.jlynFingerprintsGenerated} />
               </div>
             </div>
@@ -205,28 +234,28 @@ function App() {
 
         {/* Analytics Dashboard Tab */}
         {activeTab === 'analytics' && (
-          <div className="bg-slate-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6">
+          <div className="animate-fadeIn bg-slate-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6 min-h-screen">
             <AnalyticsDashboard transactions={transactions} fraudRings={fraudRings} />
           </div>
         )}
 
         {/* Geolocation Map Tab */}
         {activeTab === 'geolocation' && (
-          <div className="bg-slate-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6">
+          <div className="animate-fadeIn bg-slate-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6 min-h-screen">
             <GeolocationMap transactions={transactions} fraudRings={fraudRings} />
           </div>
         )}
 
-        {/* Fraud Ring Timeline Tab */}
+        {/* Fraud Ring Details Tab */}
         {activeTab === 'timeline' && (
-          <div className="bg-slate-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6">
-            <FraudRingTimeline fraudRings={fraudRings} allTransactions={transactions} />
+          <div className="animate-fadeIn bg-slate-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6 min-h-screen">
+            <FraudRingDetails fraudRings={fraudRings} allTransactions={transactions} />
           </div>
         )}
 
         {/* Transaction Search Tab */}
         {activeTab === 'search' && (
-          <div className="bg-slate-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6">
+          <div className="animate-fadeIn bg-slate-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6 min-h-screen">
             <TransactionSearch 
               transactions={transactions}
               onSelect={setSelectedTransaction}
@@ -234,12 +263,19 @@ function App() {
           </div>
         )}
 
-        <div className="mt-6 text-center">
-          <div className="inline-block bg-slate-900/50 backdrop-blur-xl border border-purple-500/30 rounded-lg px-4 py-2">
-            <span className="text-xs text-gray-400">
-              SecureLink by <span className="text-purple-400 font-semibold">Team Xcalibur</span> | Powered by{' '}
-              <span className="text-blue-400 font-semibold">Jlyn Cipher</span>
-            </span>
+        <div className="mt-8 pt-6 border-t border-purple-500/10">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400 p-4 rounded-lg bg-gradient-to-r from-slate-900/40 via-slate-800/30 to-slate-900/40">
+            <div>
+              <span>SecureLink by <span className="text-purple-400 font-semibold">Team Xcalibur</span></span>
+            </div>
+            <div className="hidden sm:block h-4 w-px bg-purple-500/20" />
+            <div>
+              <span>Powered by <span className="text-blue-400 font-semibold">Jlyn Cipher</span></span>
+            </div>
+            <div className="hidden sm:block h-4 w-px bg-purple-500/20" />
+            <div>
+              <span>v1.0 • Real-time & Secure</span>
+            </div>
           </div>
         </div>
       </div>

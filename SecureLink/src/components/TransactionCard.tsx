@@ -33,7 +33,8 @@ export const TransactionCard = memo(function TransactionCard({ transaction, isFr
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`relative bg-gradient-to-br ${getRiskColor()} backdrop-blur-xl border rounded-lg p-3 mb-2 overflow-hidden group cursor-pointer transition-all hover:scale-105 hover:shadow-lg`}
+      whileHover={{ scale: 1.02, translateY: -2 }}
+      className={`relative bg-gradient-to-br ${getRiskColor()} backdrop-blur-xl border rounded-lg p-3 mb-2 overflow-hidden group cursor-pointer transition-all shadow-md hover:shadow-lg hover:border-opacity-100`}
       style={{
         boxShadow: isFraudRing ? '0 0 20px rgba(230, 73, 128, 0.5)' : undefined
       }}
@@ -52,25 +53,27 @@ export const TransactionCard = memo(function TransactionCard({ transaction, isFr
         <div className="flex items-start justify-between mb-2">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
-              {getRiskIcon()}
-              <span className="text-white font-bold text-sm">{transaction.merchant}</span>
+              <motion.div whileHover={{ scale: 1.2 }}>
+                {getRiskIcon()}
+              </motion.div>
+              <span className="text-white font-bold text-sm truncate">{transaction.merchant}</span>
             </div>
             <div className="text-xs text-gray-400">
               {new Date(transaction.timestamp).toLocaleTimeString()}
             </div>
           </div>
-          <div className="text-right">
-            <div className="text-white font-bold">₹{transaction.amount.toLocaleString()}</div>
+          <div className="text-right ml-2">
+            <div className="text-white font-bold whitespace-nowrap">₹{transaction.amount.toLocaleString()}</div>
             <div className={`text-xs font-semibold ${getRiskTextColor()}`}>
               Risk: {transaction.riskScore}
             </div>
           </div>
         </div>
 
-        <div className="bg-slate-900/50 rounded p-2 mb-2">
+        <div className="bg-slate-900/50 rounded p-2 mb-2 border border-slate-700/50 group-hover:border-slate-600/70 transition-colors">
           <div className="text-xs text-gray-400 mb-1">Jlyn Fingerprint</div>
           <div className="font-mono text-xs text-blue-400 break-all">
-            {transaction.jlynFingerprint}
+            {transaction.jlynFingerprint.slice(0, 20)}...
           </div>
         </div>
 
@@ -79,10 +82,10 @@ export const TransactionCard = memo(function TransactionCard({ transaction, isFr
           <div>Device: {transaction.device}</div>
         </div>
 
-        <div className="mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="mt-2 max-h-0 group-hover:max-h-40 overflow-hidden transition-all duration-300">
           <div className="text-xs text-gray-300 mb-1 font-semibold">AI Reasoning:</div>
           <ul className="text-xs text-gray-400 space-y-0.5">
-            {transaction.aiReasoning.map((reason, idx) => (
+            {transaction.aiReasoning.slice(0, 2).map((reason, idx) => (
               <li key={idx}>• {reason}</li>
             ))}
           </ul>
